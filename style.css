@@ -115,10 +115,18 @@
 
 .devPic {
     width: 30%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 .devPic img {
     width: 100%;
+    border-radius: 50%;
+    border: 5px solid red; /* Add a red border */
+    object-fit: cover; /* Ensure the image covers the circle */
 }
 
 .contactform {
