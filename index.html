@@ -169,6 +169,50 @@
   .proj-stack{font-family:var(--mono); font-size:.76rem; color:var(--ink-soft); margin-top:4px;}
   .proj ul{margin:12px 0 0; padding-left:18px; color:var(--ink-soft);}
 
+  /* ---- Documents ---- */
+  .doc-count{
+    font-family:var(--mono); font-size:.8rem; color:var(--ink-soft);
+    margin:-4px 0 22px;
+  }
+  .doc-count b{color:var(--accent); font-weight:600;}
+  .doc-filters{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .doc-filter{
+    font-family:var(--mono); font-size:.76rem; cursor:pointer;
+    border:1px solid var(--line); background:transparent; color:var(--ink-soft);
+    padding:5px 11px;
+  }
+  .doc-filter:hover{color:var(--ink); border-color:var(--ink-soft);}
+  .doc-filter[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .doc-list{list-style:none; margin:0; padding:0; border-top:1px solid var(--line);}
+  .doc{
+    display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:center;
+    padding:16px 0; border-bottom:1px solid var(--line);
+  }
+  .doc-type{
+    font-family:var(--mono); font-size:.7rem; font-weight:600; letter-spacing:.04em;
+    width:44px; height:52px; display:flex; align-items:flex-end; justify-content:center;
+    padding-bottom:8px; background:var(--paper-2); border:1px solid var(--line);
+    color:var(--accent); position:relative;
+  }
+  .doc-type::before{
+    content:""; position:absolute; top:-1px; right:-1px; width:12px; height:12px;
+    background:var(--paper); border-left:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .doc-title{font-family:var(--disp); font-weight:600; font-size:1rem;}
+  .doc-meta{font-family:var(--mono); font-size:.74rem; color:var(--ink-soft); margin-top:3px;}
+  .doc-note{font-size:.88rem; color:var(--ink-soft); margin-top:4px;}
+  .doc-actions{display:flex; gap:8px;}
+  .doc-actions a{
+    font-family:var(--mono); font-size:.76rem; text-decoration:none;
+    border:1px solid var(--ink); padding:7px 12px; white-space:nowrap;
+  }
+  .doc-actions a.dl{background:var(--ink); color:var(--paper);}
+  .doc-actions a:hover{background:var(--accent); border-color:var(--accent); color:var(--paper);}
+  .doc-empty{
+    font-family:var(--mono); font-size:.82rem; color:var(--ink-soft);
+    border:1px dashed var(--line); padding:20px; text-align:center;
+  }
+
   /* ---- Contact ---- */
   #contact{padding-bottom:100px;}
   .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:28px; max-width:560px;}
@@ -202,6 +246,8 @@
     main{padding:0 20px;}
     section{padding:52px 0 32px;}
     .contact-grid{grid-template-columns:1fr;}
+    .doc{grid-template-columns:auto 1fr;}
+    .doc-actions{grid-column:1 / -1;}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -223,7 +269,8 @@
         <a href="#education"><span class="n">03</span>Education</a>
         <a href="#experience"><span class="n">04</span>Experience</a>
         <a href="#projects"><span class="n">05</span>Projects</a>
-        <a href="#contact"><span class="n">06</span>Contact</a>
+        <a href="#documents"><span class="n">06</span>Documents</a>
+        <a href="#contact"><span class="n">07</span>Contact</a>
       </nav>
     </div>
     <div class="rail-status">
@@ -239,7 +286,8 @@
       <p class="role-line">Cybersecurity Graduate Applicant<span class="sep">/</span>API Security &amp; Network Defense</p>
       <p class="lede">I'm an IT graduate from Nepal with a working background in secure backend development and network operations, applying to MS programs in cybersecurity. My interests sit in vulnerability assessment, penetration testing, API security and intrusion detection — and I like building the thing before I write about it.</p>
       <div class="cta-row">
-        <a class="btn primary" href="Prasanna_Malla_CV.pdf" download>Download CV</a>
+        <a class="btn primary" href="docs/Prasanna_Malla_CV.pdf" download>Download CV</a>
+        <a class="btn" href="#documents">All documents</a>
         <a class="btn" href="#contact">Get in touch</a>
       </div>
 
@@ -412,8 +460,16 @@
       </div>
     </section>
 
+    <section id="documents">
+      <p class="eyebrow"><span class="num">06</span>Documents</p>
+      <h2>Documents</h2>
+      <p class="doc-count" id="doc-count"></p>
+      <div class="doc-filters" id="doc-filters" role="group" aria-label="Filter documents"></div>
+      <ul class="doc-list" id="doc-list"></ul>
+    </section>
+
     <section id="contact">
-      <p class="eyebrow"><span class="num">06</span>Contact</p>
+      <p class="eyebrow"><span class="num">07</span>Contact</p>
       <h2>Get in touch</h2>
       <p class="lede">Happy to talk about MS opportunities, collaborations, or anything security-related.</p>
       <div class="contact-grid">
@@ -444,6 +500,64 @@
 </div>
 
 <script>
+  /* =========================================================
+     DOCUMENTS — to add one:
+       1. Put the file in the "docs" folder next to index.html
+       2. Add a line below. Remove any line to hide that doc.
+     ========================================================= */
+  const DOCUMENTS = [
+    { title: "Curriculum Vitae",               category: "CV",           file: "docs/Prasanna_Malla_CV.pdf",        date: "2026", note: "Full academic and professional CV." },
+    { title: "DosroGhar Project Report",       category: "Projects",     file: "docs/DosroGhar_Report.pdf",         date: "2024", note: "Final-year project report for the Online Room Rental System." },
+    { title: "Gym Management System Report",   category: "Projects",     file: "docs/Gym_Management_Report.pdf",    date: "2023" },
+  ];
+
+  (function renderDocuments(){
+    const list = document.getElementById('doc-list');
+    const count = document.getElementById('doc-count');
+    const filters = document.getElementById('doc-filters');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const ext = f => (f.split('.').pop() || '').toUpperCase().slice(0,4);
+
+    const cats = ['All', ...new Set(DOCUMENTS.map(d => d.category))];
+    let current = 'All';
+
+    function draw(){
+      const items = current === 'All' ? DOCUMENTS : DOCUMENTS.filter(d => d.category === current);
+      count.innerHTML = `<b>${items.length}</b> document${items.length === 1 ? '' : 's'}` +
+        (current === 'All' ? '' : ` in ${esc(current)}`) + ` · ${DOCUMENTS.length} total`;
+      if (!items.length){
+        list.innerHTML = '<li class="doc-empty">No documents here yet.</li>';
+        return;
+      }
+      list.innerHTML = items.map(d => `
+        <li class="doc">
+          <div class="doc-type" aria-hidden="true">${esc(ext(d.file))}</div>
+          <div>
+            <div class="doc-title">${esc(d.title)}</div>
+            <div class="doc-meta">${esc(d.category)}${d.date ? ' · ' + esc(d.date) : ''}</div>
+            ${d.note ? `<div class="doc-note">${esc(d.note)}</div>` : ''}
+          </div>
+          <div class="doc-actions">
+            <a href="${esc(d.file)}" target="_blank" rel="noopener">View</a>
+            <a class="dl" href="${esc(d.file)}" download>Download</a>
+          </div>
+        </li>`).join('');
+    }
+
+    filters.innerHTML = cats.map(c =>
+      `<button type="button" class="doc-filter" data-cat="${esc(c)}" aria-pressed="${c === current}">${esc(c)}</button>`
+    ).join('');
+    filters.addEventListener('click', e => {
+      const b = e.target.closest('.doc-filter');
+      if (!b) return;
+      current = b.dataset.cat;
+      filters.querySelectorAll('.doc-filter').forEach(x => x.setAttribute('aria-pressed', x === b));
+      draw();
+    });
+    if (cats.length <= 2) filters.hidden = true;
+    draw();
+  })();
+
   // Active nav highlighting on scroll
   const links = document.querySelectorAll('.rail-nav a');
   const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href')));
